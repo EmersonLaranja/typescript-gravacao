@@ -1,6 +1,9 @@
 import * as yup from "yup";
 import { TipoRequestBodyAdotante } from "../../tipos/tiposAdotante";
 import { NextFunction, Request, Response } from "express";
+import { pt } from "yup-locale-pt";
+
+yup.setLocale(pt);
 
 const esquemaBodyAdotante: yup.ObjectSchema<
   Omit<TipoRequestBodyAdotante, "endereco">

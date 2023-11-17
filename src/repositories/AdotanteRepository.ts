@@ -7,8 +7,15 @@ import { NaoEncontrado, RequisicaoRuim } from "../utils/manipulaErros";
 export default class AdotanteRepository implements InterfaceAdotanteRepository {
   constructor(private repository: Repository<AdotanteEntity>) {}
 
-  criaAdotante(adotante: AdotanteEntity): void {
-    this.repository.save(adotante);
+  private async verificaCelularAdotante(celular: string) {
+    return await this.repository.findOne({ where: { celular } });
+  }
+
+  async criaAdotante(adotante: AdotanteEntity): Promise<void> {
+    if (await this.verificaCelularAdotante(adotante.celular)) {
+      throw new RequisicaoRuim("Celular já cadastrado");
+    }
+    await this.repository.save(adotante);
   }
   async listaAdotantes(): Promise<AdotanteEntity[]> {
     return await this.repository.find();

@@ -18,7 +18,8 @@ export default class AbrigoController {
     const { nome, celular, email, senha, endereco } = req.body;
     const novoAbrigo = new AbrigoEntity(nome, celular, email, senha, endereco);
 
-    await this.repository.criaAbrigo(novoAbrigo);
+    const teste = await this.repository.criaAbrigo(novoAbrigo);
+    console.log(teste);
     return res
       .status(201)
       .json({ dados: { id: novoAbrigo.id, nome, celular, email, endereco } });
@@ -68,5 +69,6 @@ export default class AbrigoController {
   ) {
     const { id } = req.params;
     await this.repository.atualizaEnderecoAbrigo(Number(id), req.body);
+    return res.sendStatus(EnumHttpStatusCode.OK);
   }
 }

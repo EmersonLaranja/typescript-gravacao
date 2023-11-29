@@ -10,10 +10,18 @@ export default class AbrigoRepository implements InterfaceAbrigoRepository {
   private async existeAbrigoComCelular(celular: string): Promise<boolean> {
     return !!(await this.repository.findOne({ where: { celular } }));
   }
+  private async existeAbrigoComEmail(email: string): Promise<boolean> {
+    return !!(await this.repository.findOne({ where: { email } }));
+  }
 
   async criaAbrigo(abrigo: AbrigoEntity): Promise<void> {
-    if (await this.existeAbrigoComCelular(abrigo.celular)) {
-      throw new RequisicaoRuim("Já existe um abrigo com esse celular!");
+    if (
+      (await this.existeAbrigoComCelular(abrigo.celular)) ||
+      (await this.existeAbrigoComEmail(abrigo.email))
+    ) {
+      throw new RequisicaoRuim(
+        "Já existe um abrigo com esse celular ou email!"
+      );
     }
     await this.repository.save(abrigo);
   }
@@ -36,7 +44,6 @@ export default class AbrigoRepository implements InterfaceAbrigoRepository {
 
   async deletaAbrigo(id: number) {
     const abrigoToRemove = await this.repository.findOne({ where: { id } });
-
     if (!abrigoToRemove) {
       throw new NaoEncontrado("Abrigo não encontrado!");
     }
